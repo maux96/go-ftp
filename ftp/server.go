@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 	"strings"
+
+	commands "ftp/ftp/command"
 )
 
 type FtpServer struct {
@@ -14,11 +16,10 @@ type FtpServer struct {
 	welcomeMessage string
 }
 
-
-func New(host string, port int) *FtpServer{
+func New(host string, port int) *FtpServer {
 	server := FtpServer{
-		host: host,
-		port: port,
+		host:           host,
+		port:           port,
 		welcomeMessage: "Default Welcome Message :D",
 	}
 
@@ -28,69 +29,57 @@ func New(host string, port int) *FtpServer{
 func (server *FtpServer) Run() (err error) {
 	log.Println("Server staring...")
 
-	listening, err:= net.Listen("tcp", server.host+":"+ fmt.Sprint(server.port))
-	defer listening.Close()
-
+	listening, err := net.Listen("tcp", server.host+":"+fmt.Sprint(server.port))
 	if err != nil {
 		log.Fatal("Error Starting the server:", err.Error())
+		return err
 	}
+	defer listening.Close()
 
 	for {
 		conn, err := listening.Accept()
 		if err != nil {
-			return err	
+			return err
 		}
 
-		go server.handleConnection(conn)						
+		go server.handleConnection(conn)
 	}
 }
 
-
-func (server *FtpServer) handleConnection(conn net.Conn){
+func (server *FtpServer) handleConnection(conn net.Conn) {
 	var posibleErr error
-	defer func(){
-		if posibleErr != nil{
-			log.Println("Error:",posibleErr.Error())
+	defer func() {
+		if posibleErr != nil {
+			log.Println("Error:", posibleErr.Error())
 		}
 		conn.Close()
 	}()
-	_,posibleErr=conn.Write([]byte(server.welcomeMessage))
-	if posibleErr != nil{
+	_, posibleErr = conn.Write([]byte(server.welcomeMessage))
+	if posibleErr != nil {
+		log.Println("Error writing to " + conn.RemoteAddr().String() + " connection.\n" + posibleErr.Error())
 		return
 	}
 
+	ctx := commands.NewConnCtx(conn)
 
-	for  {
-
+	for {
 		var currentData [1024]byte
-		totalDataReaded, posibleErr:=conn.Read(currentData[:]) 
-		if posibleErr != nil ||  totalDataReaded == 0 {
-			return 
+		totalDataReaded, posibleErr := conn.Read(currentData[:])
+		if posibleErr != nil || totalDataReaded == 0 {
+			log.Println("Error reading from " + conn.RemoteAddr().String() + " connection.\n" + posibleErr.Error())
+			return
 		}
 
-		log.Printf("Reciving command from %s : %s", conn.RemoteAddr(), currentData)	
+		log.Printf("Reciving command from %s : %s", conn.RemoteAddr(), currentData)
 
-		currentDataAsString:=strings.Trim(string(currentData[:]),"\x00")
-		tokens:=strings.Split(currentDataAsString," ")
-		tokens[0] =  strings.ToUpper(tokens[0])
-		fmt.Println(tokens)
-		
-		switch tokens[0]{
+		var baseCommand commands.BaseCommand = commands.RawCommand(strings.Trim(string(currentData[:]), "\x00")).GetCommand()
 
-		case "NOOP":
-			_,posibleErr=conn.Write([]byte("200 OK\t\n"))	
-			if posibleErr != nil {
-				return	
-			}
-		default:
-			_,posibleErr=conn.Write([]byte("502 Command Not Implemented!\t\n"))		
-			if posibleErr != nil{
-				return
-			}
+		comm, err := ResolveCommand(baseCommand)
+		if err != nil {
+			log.Println(err.Error())
+			conn.Write([]byte("502 Command Not Implemented!\t\n"))
+		} else {
+			comm.Action(ctx)
 		}
 	}
 }
-
-
-
-
