@@ -37,7 +37,19 @@ func (ctx *ConnCtx) UserPath() string {
 	return sol
 }
 func (ctx *ConnCtx) ChangePath(newPath string) error {
-	realNewPath := filepath.Join(ctx.basePath, newPath)
+	var realNewPath string
+	var tempPath string
+	if filepath.IsAbs(newPath) {
+		tempPath = filepath.Clean(newPath)
+	} else {
+		tempPath = filepath.Clean(filepath.Join(ctx.UserPath(), newPath))
+	}
+
+	if filepath.Base(tempPath) == ".." {
+		realNewPath = ctx.basePath
+	} else {
+		realNewPath = filepath.Join(ctx.basePath, tempPath)
+	}
 
 	if ok, err := pathExists(realNewPath); ok {
 		ctx.currentPath = realNewPath
@@ -51,7 +63,7 @@ func pathExists(path string) (bool, error) {
 	if err == nil {
 		return true, nil
 	} else if os.IsNotExist(err) {
-		return false, nil
+		return false, err
 	} else {
 		return false, err
 	}

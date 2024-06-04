@@ -23,4 +23,5 @@ func ResolveCommand(bc commands.BaseCommand) (commands.Command, error) {
 var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Command{
 	"NOOP": func(comm commands.BaseCommand) commands.Command { return commands.NoopCommand(comm) },
 	"PWD":  func(comm commands.BaseCommand) commands.Command { return commands.PwdCommand(comm) },
+	"CWD":  func(comm commands.BaseCommand) commands.Command { return commands.CwdCommand(comm) },
 }
