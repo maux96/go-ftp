@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	SERVER_HOST = "localhost"
-	SERVER_PORT = 7000
+	SERVER_HOST = "0.0.0.0"
+	SERVER_PORT = 21
 )
 
 func main() {

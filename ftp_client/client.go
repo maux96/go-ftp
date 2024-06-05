@@ -6,25 +6,28 @@ import (
 	"log"
 	"net"
 	"os"
-)
-
-const (
-	CONNECTION_ADDR = "localhost"
-	CONNECTION_PORT = 7000
+	"strconv"
 )
 
 func StartClient() {
-	var name string
+	var (
+		CONNECTION_ADDR = "localhost"
+		CONNECTION_PORT = 21
+	)
 
-	//fmt.Print("Your Name:")
-	//_,someError:=fmt.Scanln(&name)
-	var someError error
-	if someError != nil {
-		log.Fatalln("Error reading the name!")
+	if len(os.Args) > 1 {
+		CONNECTION_ADDR = os.Args[1]
+	}
+	if len(os.Args) > 2 {
+		portToUse, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			log.Fatalln(err.Error())
+		} else {
+			CONNECTION_PORT = portToUse
+		}
 	}
 
 	addr := fmt.Sprintf("%s:%d", CONNECTION_ADDR, CONNECTION_PORT)
-	log.Println("Connecting", name, "to", addr)
 
 	conn, someError := net.Dial("tcp", addr)
 	defer func() {

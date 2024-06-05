@@ -25,4 +25,5 @@ var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Com
 	"PWD":  func(comm commands.BaseCommand) commands.Command { return commands.PwdCommand(comm) },
 	"CWD":  func(comm commands.BaseCommand) commands.Command { return commands.CwdCommand(comm) },
 	"MKD":  func(comm commands.BaseCommand) commands.Command { return commands.MkdCommand(comm) },
+	"PASV": func(comm commands.BaseCommand) commands.Command { return commands.PasvCommand(comm) },
 }

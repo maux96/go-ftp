@@ -79,7 +79,10 @@ func (server *FtpServer) handleConnection(conn net.Conn) {
 			log.Println(err.Error())
 			conn.Write([]byte("502 Command Not Implemented!\t\n"))
 		} else {
-			comm.Action(ctx)
+			err = comm.Action(ctx)
+			if err != nil {
+				log.Println("ERROR: " + err.Error())
+			}
 		}
 	}
 }

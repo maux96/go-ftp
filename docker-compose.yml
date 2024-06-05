@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+# client: 
+#   image: go-ftp 
+#   command: ./app
+#   networks:
+#     - test-ftp-net 
+#   depends_on:
+#     - server
+  server: 
+    image: go-ftp 
+    networks:
+      - test-ftp-net 
+
+networks:
+  test-ftp-net:
+    driver: bridge
