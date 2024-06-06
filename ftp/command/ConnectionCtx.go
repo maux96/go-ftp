@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"os"
@@ -36,7 +37,8 @@ func (ctx *ConnCtx) UserPath() string {
 	if err != nil {
 		log.Fatal("Este error no debio suceder,", err.Error())
 	}
-	return sol
+	return filepath.Join("/", sol)
+
 }
 
 /* the real path and if exists */
@@ -55,7 +57,7 @@ func (ctx *ConnCtx) GetRealPath(pathFromUser string) (string, bool) {
 		realNewPath = filepath.Join(ctx.basePath, tempPath)
 	}
 
-	exists, _ := pathExists(realNewPath)
+	exists := PathExists(realNewPath)
 
 	return realNewPath, exists
 }
@@ -63,20 +65,15 @@ func (ctx *ConnCtx) GetRealPath(pathFromUser string) (string, bool) {
 func (ctx *ConnCtx) ChangePath(newPath string) error {
 	realNewPath, _ := ctx.GetRealPath(newPath)
 
-	if ok, err := pathExists(realNewPath); ok {
+	if ok := PathExists(realNewPath); ok {
 		ctx.currentPath = realNewPath
 		return nil
 	} else {
-		return err
+		return fs.ErrNotExist
 	}
 }
-func pathExists(path string) (bool, error) {
+
+func PathExists(path string) bool {
 	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	} else if os.IsNotExist(err) {
-		return false, err
-	} else {
-		return false, err
-	}
+	return err == nil
 }

@@ -8,7 +8,7 @@ import (
 
 const (
 	SERVER_HOST = "0.0.0.0"
-	SERVER_PORT = 21
+	SERVER_PORT = 2021
 )
 
 func main() {

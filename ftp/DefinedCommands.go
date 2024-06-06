@@ -22,8 +22,11 @@ func ResolveCommand(bc commands.BaseCommand) (commands.Command, error) {
 
 var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Command{
 	"NOOP": func(comm commands.BaseCommand) commands.Command { return commands.NoopCommand(comm) },
+	"USER": func(comm commands.BaseCommand) commands.Command { return commands.UserCommand(comm) },
+	"TYPE": func(comm commands.BaseCommand) commands.Command { return commands.TypeCommand(comm) },
 	"PWD":  func(comm commands.BaseCommand) commands.Command { return commands.PwdCommand(comm) },
 	"CWD":  func(comm commands.BaseCommand) commands.Command { return commands.CwdCommand(comm) },
 	"MKD":  func(comm commands.BaseCommand) commands.Command { return commands.MkdCommand(comm) },
 	"PASV": func(comm commands.BaseCommand) commands.Command { return commands.PasvCommand(comm) },
+	"LIST": func(comm commands.BaseCommand) commands.Command { return commands.ListCommand(comm) },
 }

@@ -29,7 +29,7 @@ func New(host string, port int) *FtpServer {
 func (server *FtpServer) Run() (err error) {
 	log.Println("Server staring...")
 
-	listening, err := net.Listen("tcp", server.host+":"+fmt.Sprint(server.port))
+	listening, err := net.Listen("tcp4", fmt.Sprintf("%s:%d", server.host, server.port))
 	if err != nil {
 		log.Fatal("Error Starting the server:", err.Error())
 		return err
@@ -54,13 +54,14 @@ func (server *FtpServer) handleConnection(conn net.Conn) {
 		}
 		conn.Close()
 	}()
-	_, posibleErr = conn.Write([]byte(server.welcomeMessage))
+
+	ctx := commands.NewConnCtx(conn)
+
+	posibleErr = ctx.SendMessage(220, "Welcome to the GOlang ftp.")
 	if posibleErr != nil {
 		log.Println("Error writing to " + conn.RemoteAddr().String() + " connection.\n" + posibleErr.Error())
 		return
 	}
-
-	ctx := commands.NewConnCtx(conn)
 
 	for {
 		var currentData [1024]byte

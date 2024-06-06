@@ -36,6 +36,6 @@ func (cmd PasvCommand) Action(ctx *ConnCtx) error {
 
 func initPasiveDataSocket() (listener net.Listener, port int, err error) {
 	port = 1500 + rand.Intn(7500)
-	listener, err = net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
+	listener, err = net.Listen("tcp4", fmt.Sprintf("0.0.0.0:%d", port))
 	return listener, port, err
 }
