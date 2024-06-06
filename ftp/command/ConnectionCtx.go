@@ -28,7 +28,7 @@ func NewConnCtx(conn net.Conn) *ConnCtx {
 }
 
 func (ctx *ConnCtx) SendMessage(code int, message string) error {
-	_, err := ctx.conn.Write([]byte(fmt.Sprintf("%d %s%s", code, message, "\t\n")))
+	_, err := ctx.conn.Write([]byte(fmt.Sprintf("%d %s%s", code, message, " \t\n")))
 	return err
 }
 

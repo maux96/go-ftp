@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -17,6 +16,11 @@ func (cmd ListCommand) Action(ctx *ConnCtx) error {
 		return nil
 	}
 
+	if ctx.dataConnection == nil {
+		ctx.SendMessage(426, "Connection closed; transfer aborted.")
+		return nil
+	}
+
 	ctx.SendMessage(125, "Data connection already open; transfer starting.")
 
 	files, err := os.ReadDir(realPath)
@@ -28,11 +32,10 @@ func (cmd ListCommand) Action(ctx *ConnCtx) error {
 	for _, val := range files {
 		info, fileErr := val.Info()
 		if fileErr == nil {
-			toSend += fmt.Sprintf("%s 1 anon anon %d %s\n", info.Mode().String(), info.Size(), info.Name())
+			toSend += fmt.Sprintf("%s 1 unknow unknow %d %s\n", info.Mode().String(), info.Size(), info.Name())
 		}
 	}
 
-	log.Println(toSend)
 	_, err = ctx.dataConnection.Write([]byte(toSend))
 	if err != nil {
 		return err
