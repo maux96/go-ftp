@@ -36,6 +36,7 @@ func (server *FtpServer) Run() (err error) {
 	}
 	defer listening.Close()
 
+	log.Printf("Server available in %s:%d\n", server.host, server.port)
 	for {
 		conn, err := listening.Accept()
 		if err != nil {

@@ -1,26 +1,20 @@
 package main
 
 import (
+	"flag"
 	ftp "ftp/ftp"
-	client "ftp/ftp_client"
-	"os"
 )
 
-const (
+var (
 	SERVER_HOST = "0.0.0.0"
 	SERVER_PORT = 2021
 )
 
 func main() {
-	isClient := true
-	if len(os.Args) > 1 && os.Args[1] == "server" {
-		isClient = false
-	}
+	flag.StringVar(&SERVER_HOST, "host", SERVER_HOST, "FTP server host (default: 0.0.0.0).")
+	flag.IntVar(&SERVER_PORT, "port", SERVER_PORT, "FTP server main port (default: 2021).")
 
-	if isClient {
-		client.StartClient()
-	} else {
-		server := ftp.New(SERVER_HOST, SERVER_PORT)
-		server.Run()
-	}
+	flag.Parse()
+	server := ftp.New(SERVER_HOST, SERVER_PORT)
+	server.Run()
 }
