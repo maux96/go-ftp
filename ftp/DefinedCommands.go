@@ -31,4 +31,5 @@ var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Com
 
 	"LIST": func(comm commands.BaseCommand) commands.Command { return commands.ListCommand(comm) },
 	"STOR": func(comm commands.BaseCommand) commands.Command { return commands.StorCommand(comm) },
+	"RETR": func(comm commands.BaseCommand) commands.Command { return commands.RetrCommand(comm) },
 }
