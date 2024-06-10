@@ -32,6 +32,7 @@ var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Com
 	"RMD":  func(comm commands.BaseCommand) commands.Command { return commands.RmdCommand(comm) },
 
 	"PASV": func(comm commands.BaseCommand) commands.Command { return commands.PasvCommand(comm) },
+	"PORT": func(comm commands.BaseCommand) commands.Command { return commands.PortCommand(comm) },
 
 	"LIST": func(comm commands.BaseCommand) commands.Command { return commands.ListCommand(comm) },
 	"STOR": func(comm commands.BaseCommand) commands.Command { return commands.StorCommand(comm) },
