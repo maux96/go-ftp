@@ -9,6 +9,6 @@ COPY . .
 
 RUN go build -o app main.go
 
-CMD [ "/usr/src/app/app", "server" ]
+CMD [ "/usr/src/app/app","--port=21", "/home" ]
 
 
