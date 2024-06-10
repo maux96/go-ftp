@@ -9,8 +9,6 @@ import (
 	"path/filepath"
 )
 
-var ROOT_PATH string = "/home/maux96/Images/Space"
-
 type ConnCtx struct {
 	conn           net.Conn
 	currentPath    string
@@ -19,11 +17,11 @@ type ConnCtx struct {
 	_renameFrom    *string
 }
 
-func NewConnCtx(conn net.Conn) *ConnCtx {
+func NewConnCtx(conn net.Conn, basePath string) *ConnCtx {
 	return &ConnCtx{
 		conn:           conn,
-		currentPath:    ROOT_PATH,
-		basePath:       ROOT_PATH,
+		currentPath:    basePath,
+		basePath:       basePath,
 		dataConnection: nil,
 		_renameFrom:    nil,
 	}

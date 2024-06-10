@@ -10,16 +10,18 @@ import (
 )
 
 type FtpServer struct {
-	host string
-	port int
+	host     string
+	port     int
+	basePath string
 
 	welcomeMessage string
 }
 
-func New(host string, port int) *FtpServer {
+func New(host string, port int, basePath string) *FtpServer {
 	server := FtpServer{
 		host:           host,
 		port:           port,
+		basePath:       basePath,
 		welcomeMessage: "Default Welcome Message :D",
 	}
 
@@ -37,6 +39,8 @@ func (server *FtpServer) Run() (err error) {
 	defer listening.Close()
 
 	log.Printf("Server available in %s:%d\n", server.host, server.port)
+	log.Printf("Base Path: %s\n", server.basePath)
+
 	for {
 		conn, err := listening.Accept()
 		if err != nil {
@@ -56,9 +60,9 @@ func (server *FtpServer) handleConnection(conn net.Conn) {
 		conn.Close()
 	}()
 
-	ctx := commands.NewConnCtx(conn)
+	ctx := commands.NewConnCtx(conn, server.basePath)
 
-	posibleErr = ctx.SendMessage(220, "Welcome to the GOlang ftp.")
+	posibleErr = ctx.SendMessage(220, server.welcomeMessage)
 	if posibleErr != nil {
 		log.Println("Error writing to " + conn.RemoteAddr().String() + " connection.\n" + posibleErr.Error())
 		return
