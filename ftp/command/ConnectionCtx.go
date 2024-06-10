@@ -16,6 +16,7 @@ type ConnCtx struct {
 	currentPath    string
 	basePath       string
 	dataConnection net.Conn
+	_renameFrom    *string
 }
 
 func NewConnCtx(conn net.Conn) *ConnCtx {
@@ -24,7 +25,19 @@ func NewConnCtx(conn net.Conn) *ConnCtx {
 		currentPath:    ROOT_PATH,
 		basePath:       ROOT_PATH,
 		dataConnection: nil,
+		_renameFrom:    nil,
 	}
+}
+
+func (ctx *ConnCtx) GetRenameFromPath() (path string, ok bool) {
+	if ctx._renameFrom != nil {
+		return *ctx._renameFrom, true
+	}
+	return "", false
+}
+func (ctx *ConnCtx) SetRenameFromPath(path string) {
+	ctx._renameFrom = &path
+	log.Println(*ctx._renameFrom)
 }
 
 func (ctx *ConnCtx) SendMessage(code int, message string) error {

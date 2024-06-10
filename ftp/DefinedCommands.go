@@ -24,14 +24,19 @@ var AVAILABLE_COMMANDS = map[string]func(comm commands.BaseCommand) commands.Com
 	"NOOP": func(comm commands.BaseCommand) commands.Command { return commands.NoopCommand(comm) },
 	"USER": func(comm commands.BaseCommand) commands.Command { return commands.UserCommand(comm) },
 	"TYPE": func(comm commands.BaseCommand) commands.Command { return commands.TypeCommand(comm) },
+
 	"PWD":  func(comm commands.BaseCommand) commands.Command { return commands.PwdCommand(comm) },
 	"CWD":  func(comm commands.BaseCommand) commands.Command { return commands.CwdCommand(comm) },
 	"MKD":  func(comm commands.BaseCommand) commands.Command { return commands.MkdCommand(comm) },
+	"DELE": func(comm commands.BaseCommand) commands.Command { return commands.DeleCommand(comm) },
+	"RMD":  func(comm commands.BaseCommand) commands.Command { return commands.RmdCommand(comm) },
+
 	"PASV": func(comm commands.BaseCommand) commands.Command { return commands.PasvCommand(comm) },
 
 	"LIST": func(comm commands.BaseCommand) commands.Command { return commands.ListCommand(comm) },
 	"STOR": func(comm commands.BaseCommand) commands.Command { return commands.StorCommand(comm) },
 	"RETR": func(comm commands.BaseCommand) commands.Command { return commands.RetrCommand(comm) },
-	"DELE": func(comm commands.BaseCommand) commands.Command { return commands.DeleCommand(comm) },
-	"RMD":  func(comm commands.BaseCommand) commands.Command { return commands.RmdCommand(comm) },
+
+	"RNFR": func(comm commands.BaseCommand) commands.Command { return commands.RnfrCommand(comm) },
+	"RNTO": func(comm commands.BaseCommand) commands.Command { return commands.RntoCommand(comm) },
 }
